@@ -108,6 +108,36 @@ Resources:
                   Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
 
 
+# creating NATgateway in the public subnets so the private subnet instance can go out.
+   # we first create the NATgateway and then attach it to the repective public subnets
+
+    NatGateway1EIP:
+        Type: AWS::EC2::EIP
+        DependsOn: InternetGatewayAttachment
+        Properties: 
+            Domain: myVPC
+
+    NatGateway2EIP:
+        Type: AWS::EC2::EIP
+        DependsOn: InternetGatewayAttachment
+        Properties:
+            Domain: myVPC
+
+    NatGateway1: 
+        Type: AWS::EC2::NatGateway
+        Properties: 
+            AllocationId: !GetAtt NatGateway1EIP.AllocationId
+            SubnetId: !Ref PublicSubnet1
+
+    NatGateway2: 
+        Type: AWS::EC2::NatGateway
+        Properties:
+            AllocationId: !GetAtt NatGateway2EIP.AllocationId
+            SubnetId: !Ref PublicSubnet2
+
+
+
+
 
 
 
