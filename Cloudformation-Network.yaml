@@ -39,5 +39,11 @@ Resources:
         Properties:
             InternetGatewayId: !Ref InternetGateway
             VpcId: !Ref myVPC
-    
-    
+            
+
+
+
+
+
+            
+              
