@@ -146,6 +146,9 @@ Resources:
                 - Key: Name 
                   Value: !Sub ${EnvironmentName} Public Routes
 
+# the first route rule state all traffic be routed through the gateway
+# to outside network                  
+
     DefaultPublicRoute: 
         Type: AWS::EC2::Route
         DependsOn: InternetGatewayAttachment
@@ -153,6 +156,9 @@ Resources:
             RouteTableId: !Ref PublicRouteTable
             DestinationCidrBlock: 0.0.0.0/0
             GatewayId: !Ref InternetGateway
+
+# subnet route table association, we just specifying which subnet the 
+# above rule applies to
 
     PublicSubnet1RouteTableAssociation:
         Type: AWS::EC2::SubnetRouteTableAssociation
@@ -165,6 +171,8 @@ Resources:
         Properties:
             RouteTableId: !Ref PublicRouteTable
             SubnetId: !Ref PublicSubnet2   
+
+# creation of private route table for private subnet 1           
     
     PrivateRouteTable1:
         Type: AWS::EC2::RouteTable
@@ -174,6 +182,10 @@ Resources:
                 - Key: Name 
                   Value: !Sub ${EnvironmentName} Private Routes (AZ1)
 
+# rule state all traffic going out should go through the NatGateway 1
+# from the private subnet, keeping the traffic from the Private
+# subnet within the VPC
+
     DefaultPrivateRoute1:
         Type: AWS::EC2::Route
         Properties:
@@ -181,11 +193,15 @@ Resources:
             DestinationCidrBlock: 0.0.0.0/0
             NatGatewayId: !Ref NatGateway1
 
+# adding the route association above to private subnet 1
+
     PrivateSubnet1RouteTableAssociation:
         Type: AWS::EC2::SubnetRouteTableAssociation
         Properties:
             RouteTableId: !Ref PrivateRouteTable1
             SubnetId: !Ref PrivateSubnet1
+
+# creation of private route table private subnet 2
 
     PrivateRouteTable2:
         Type: AWS::EC2::RouteTable
@@ -195,12 +211,18 @@ Resources:
                 - Key: Name 
                   Value: !Sub ${EnvironmentName} Private Routes (AZ2)
 
+# rule state all traffic going out should go through the NatGateway 2
+# from the private subnet, keeping the traffic from the Private
+# subnet within the VPC
+
     DefaultPrivateRoute2:
         Type: AWS::EC2::Route
         Properties:
             RouteTableId: !Ref PrivateRouteTable2
             DestinationCidrBlock: 0.0.0.0/0
             NatGatewayId: !Ref NatGateway2
+
+# adding the route association above to private subnet 1
 
     PrivateSubnet2RouteTableAssociation:
         Type: AWS::EC2::SubnetRouteTableAssociation
