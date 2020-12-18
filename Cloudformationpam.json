@@ -1,4 +1,9 @@
-
+[
+	{
+		"ParameterKey": "EnvironmentName",
+		"ParameterValue": "Udacity-Cloudformation-Project"
+    }
+]
 
 
 
