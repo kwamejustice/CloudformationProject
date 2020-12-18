@@ -71,11 +71,13 @@ Resources:
                 Fn::Base64: !Sub |
                     #!/bin/bash
                     # Install apache web server
-                    sudo apt update -y
-                    sudo apt install -y apache2
-                    sudo systemctl start apache2
+                    apt-get update -y
+                    apt-get install unzip awscli -y
+                    apt-get install apache2 -y
+                    systemctl start apache2.service
                     cd /var/www/html
-                    echo "Udacity Demo Web Serve Up and Running!" > index.html
+                    aws s3 cp s3://udacity-demo-1/udacity.zip .
+                    unzip -o udacity.zip
                     
             ImageId: ami-0ac73f33a1888c64a
             KeyName: private-server-Devops-key
