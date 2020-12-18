@@ -25,9 +25,10 @@ Outputs:
 # when you visit the IP address of this server with your web browser
 #Here it is:
 #
-#          #!/bin/bash
-#          apt-get update -y
-#          apt-get install apache2 -y
-#          systemctl start apache2.service
-#          cd /var/www/html
-#          echo "Udacity Demo Web Server Up and Running!" > index.html
+#         #!/bin/bash
+#         sudo apt-get update -y
+#         sudo apt-get install apache2 -y
+#         sudo apt-get systemctl status apache2
+#         sudo systemctl start apache2
+#         cd /var/www/html
+#         echo "Udacity Demo Web Server Up and Running!" > index.html

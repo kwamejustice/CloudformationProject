@@ -14,23 +14,28 @@ Parameters:
 
 Resources:
     
+
+# Creating security group for the load balancer
+
     LBSecGroup:
         Type: AWS::EC2::SecurityGroup
         Properties:
             GroupDescription: Allow http to our load balancer
             VpcId:
                 Fn::ImportValue:
-                    !Sub "${EnvironmentName}-VPCID"
-            SecurityGroupIngress:
+                    !Sub "${EnvironmentName}-VPCID"  
+            SecurityGroupIngress:       # opening port 80 for incoming traffic
                 - IpProtocol: tcp
                   FromPort: 80
                   ToPort: 80
                   CidrIp: 0.0.0.0/0
-            SecurityGroupEgress:
+            SecurityGroupEgress:         #  allowing traffic outs
                 - IpProtocol: tcp
                   FromPort: 80
                   ToPort: 80
                   CidrIp: 0.0.0.0/0
+
+# creating security group for the servers                  
 
     WebServerSecGroup:
         Type: AWS::EC2::SecurityGroup
@@ -48,13 +53,39 @@ Resources:
                   FromPort: 22
                   ToPort: 22
                   CidrIp: 0.0.0.0/0
+
+# Giving unrestricted internet access to the webservers
+
             SecurityGroupEgress:
                 - IpProtocol: tcp
                   FromPort: 0
                   ToPort: 65535
                   CidrIp: 0.0.0.0/0  
 
+# adding auto scaling launch configuration
 
+    WebAppLaunchConfig:
+        Type: AWS::AutoScaling::LaunchConfiguration
+        Properties:
+            UserData:
+                Fn::Base64: !Sub |
+                    #!/bin/bash
+                    # Install apache web server
+                    sudo apt update -y
+                    sudo apt install -y apache2
+                    sudo systemctl start apache2
+                    cd /var/www/html
+                    echo "Udacity Demo Web Serve Up and Running!" > index.html
+                    
+            ImageId: ami-0ac73f33a1888c64a
+            KeyName: private-server-Devops-key
+            SecurityGroups:
+                - Ref: WebServerSecGroup
+            InstanceType: t3.medium
+            BlockDeviceMappings:
+                - DeviceName: "/dev/sdk"
+                  Ebs:
+                      VolumeSize: '10'
 
 
 
