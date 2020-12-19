@@ -49,10 +49,7 @@ Resources:
                   FromPort: 80
                   ToPort: 80
                   CidrIp: 0.0.0.0/0
-                - IpProtocol: tcp
-                  FromPort: 22
-                  ToPort: 22
-                  CidrIp: 0.0.0.0/0
+                
 
 # Giving unrestricted internet access to the webservers
 
@@ -78,7 +75,6 @@ Resources:
                     echo "it works! Udagram, Udacity" > index.html
                     
             ImageId: ami-0ac73f33a1888c64a
-            KeyName: private-server-Devops-key
             SecurityGroups:
                 - Ref: WebServerSecGroup
             InstanceType: t3.medium
