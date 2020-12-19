@@ -95,7 +95,7 @@ Resources:
            BucketName:  udacity-demo-5
      
 
-    # adding autosclaing for webapp
+# adding autosclaing for webapp
 
     WebAppGroup:
         Type: AWS::AutoScaling::AutoScalingGroup
@@ -105,7 +105,59 @@ Resources:
             LaunchConfigurationName: !Ref WebAppLaunchConfig
             MinSize: '4'
             MaxSize: '8'
+            TargetGroupARNs:
+                - Ref: WebAppTargetGroup
 
+# adding load balancers
+     
+    WebAppLB:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+            Subnets:
+                - Fn::ImportValue: !Sub "${EnvironmentName}-PUB1-SN"
+                - Fn::ImportValue: !Sub "${EnvironmentName}-PUB2-SN"
+            SecurityGroups: 
+                - Ref: LBSecGroup
+
+# ading a Listener
+
+    Listener:
+        Type: AWS::ElasticLoadBalancingV2::Listener
+        Properties:
+            DefaultActions:
+                - Type: forward
+                  TargetGroupArn:  !Ref WebAppTargetGroup
+            LoadBalancerArn:  !Ref WebAppLB
+            Port: '80'
+            Protocol: HTTP
+    ALBListenerRule:
+        Type: AWS::ElasticLoadBalancingV2::ListenerRule
+        Properties:
+            Actions:
+                - Type: forward
+                  TargetGroupArn: !Ref 'WebAppTargetGroup'
+            Conditions:
+                - Field: path-pattern
+                  Values: [/]
+            ListenerArn: !Ref 'Listener'
+            Priority: 1
+
+# adding health monitors 
+
+    WebAppTargetGroup:
+        Type: AWS::ElasticLoadBalancingV2::TargetGroup
+        Properties:
+            HealthCheckIntervalSeconds: 10
+            HealthCheckPath: /
+            HealthCheckProtocol: HTTP
+            HealthCheckTimeoutSeconds: 8
+            HealthyThresholdCount: 2
+            Port: 80
+            Protocol: HTTP
+            UnhealthyThresholdCount: 5
+            VpcId: 
+                Fn::ImportValue:
+                    Fn::Sub: "${EnvironmentName}-VPCID"
 
 
 
