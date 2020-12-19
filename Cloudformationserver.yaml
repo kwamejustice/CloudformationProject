@@ -92,10 +92,26 @@ Resources:
        Type: AWS::S3::Bucket
        DeletionPolicy: Retain
        Properties:
-           BucketName:  udacity-demo-5
-     
+           BucketName: udacity-demo-5
 
-# adding autosclaing for webapp
+#  s3 Bucket policy
+    S3BucketPolicy:
+        Type: AWS::S3::BucketPolicy
+        Properties:
+            PolicyDocument:
+                Statement:
+                    - Sid: IPAllow              
+                      Effect: Allow
+                      Principal: '*'
+                      Action:
+                          - s3:GetObject
+                          - s3:PutObject
+                      Resource: "arn:aws:s3:::udacity-demo-5/*"
+                          
+            Bucket: !Ref S3Bucket  
+
+
+# Autoscaling 
 
     WebAppGroup:
         Type: AWS::AutoScaling::AutoScalingGroup

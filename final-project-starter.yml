@@ -32,3 +32,32 @@ Outputs:
 #         sudo systemctl start apache2
 #         cd /var/www/html
 #         echo "Udacity Demo Web Server Up and Running!" > index.html
+
+
+# s3 Bucket policy
+    S3BucketPolicy:
+        Tpye: AWS::S3::BucketPolicy
+        Properties:
+            PolicyDocument:
+            Statment:
+                - Effect: Allow
+                  Principal: '*'
+                  Action:
+                      - s3:GetObject
+                  Resource: !sub 'arn:aws:s3:::${S3Bucket}/*'
+            Bucket: !Ref S3Bucket  
+
+
+     
+# creating IAM role for the EC2 instances
+     
+     {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": "*"
+        }
+    ]
+}
