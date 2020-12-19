@@ -94,8 +94,17 @@ Resources:
        Properties:
            BucketName:  udacity-demo-5
      
-    
 
+    # adding autosclaing for webapp
+
+    WebAppGroup:
+        Type: AWS::AutoScaling::AutoScalingGroup
+        Properties:
+            VPCZoneIdentifier:
+                - Fn::ImportValue: !Sub "${EnvironmentName}-PRIV-NETS"
+            LaunchConfigurationName: !Ref WebAppLaunchConfig
+            MinSize: '4'
+            MaxSize: '8'
 
 
 
