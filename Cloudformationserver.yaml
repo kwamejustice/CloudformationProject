@@ -72,12 +72,10 @@ Resources:
                     #!/bin/bash
                     # Install apache web server
                     apt-get update -y
-                    apt-get install unzip awscli -y
                     apt-get install apache2 -y
                     systemctl start apache2.service
                     cd /var/www/html
-                    aws s3 cp s3://udacity-demo-1/udacity.zip .
-                    unzip -o udacity.zip
+                    echo "it works! Udagram, Udacity" > index.html
                     
             ImageId: ami-0ac73f33a1888c64a
             KeyName: private-server-Devops-key
@@ -89,8 +87,14 @@ Resources:
                   Ebs:
                       VolumeSize: '10'
 
-
-
+# creating an s3 bucket
+    S3Bucket:
+       Type: AWS::S3::Bucket
+       DeletionPolicy: Retain
+       Properties:
+           BucketName:  udacity-demo-5
+     
+    
 
 
 
